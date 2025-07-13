@@ -1,0 +1,16 @@
+# Enforce LF line endings for all source code files
+*.tsx text eol=lf
+*.ts text eol=lf
+*.js text eol=lf
+*.jsx text eol=lf
+*.json text eol=lf
+
+# For markdown and config files
+*.md text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+
+# Binary files should be marked as binary
+*.png binary
+*.jpg binary
+*.gif binary
