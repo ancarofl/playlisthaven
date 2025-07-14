@@ -1,9 +1,10 @@
 "use client";
 
+import { Copy, Heart, Layers, Music, Settings } from "lucide-react";
 import Link from "next/link";
-import { ThemeToggle } from "./theme-toggle";
+
 import { MobileNav } from "./mobile-nav";
-import { Copy, Layers, Settings, Music, Heart } from "lucide-react";
+import { ThemeToggle } from "./theme-toggle";
 
 // TODO: Yes update
 const links = [
