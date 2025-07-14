@@ -9,7 +9,17 @@
 		"lint": "next lint",
 		"prettier": "prettier --write .",
 		"eslint": "eslint src --fix",
-		"format": "npm run prettier && npm run eslint"
+		"format": "npm run prettier && npm run eslint",
+		"prepare": "husky install"
+	},
+	"lint-staged": {
+		"src/**/*.{js,jsx,ts,tsx}": [
+			"eslint --fix",
+			"prettier --write"
+		],
+		"src/**/*.{css,scss,md,json}": [
+			"prettier --write"
+		]
 	},
 	"dependencies": {
 		"@radix-ui/react-dialog": "^1.1.14",
@@ -35,6 +45,8 @@
 		"eslint": "^9",
 		"eslint-config-next": "15.3.5",
 		"eslint-plugin-simple-import-sort": "^12.1.1",
+		"husky": "^8.0.0",
+		"lint-staged": "^16.1.2",
 		"prettier": "^3.6.2",
 		"prettier-plugin-tailwindcss": "^0.6.14",
 		"tailwindcss": "^4",
