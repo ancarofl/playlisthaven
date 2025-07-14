@@ -11,6 +11,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 interface LinkWithIcon {
 	href: string;
+
 	label: string;
 	Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
 }
