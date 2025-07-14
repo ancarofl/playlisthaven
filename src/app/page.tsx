@@ -1,10 +1,7 @@
-import { Button } from "@/components/ui/button";
-
-export default function Home() {
+export default function Page() {
 	return (
-		<div className="bg-orange-500">
-			<Button>Click me</Button>
-			<Button variant="secondary">Click me 2</Button>
+		<div>
+			<h1 className="border-2 border-solid border-blue-500">HOMEPAGE</h1>
 		</div>
 	);
 }
