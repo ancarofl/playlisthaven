@@ -9,10 +9,10 @@ import { ThemeToggle } from "./theme-toggle";
 // TODO: Yes update
 const links = [
 	{ href: "/clone", label: "Clone Playlist", Icon: Copy }, //  TODO: Name?
-	{ href: "/placeholder1", label: "Placeholder 1", Icon: Heart },
-	{ href: "/placeholder2", label: "Placeholder 2", Icon: Layers },
-	{ href: "/placeholder3", label: "Placeholder 3", Icon: Settings },
-	{ href: "/placeholder4", label: "Placeholder 4", Icon: Music },
+	{ href: "/test", label: "Test", Icon: Heart },
+	{ href: "/placeholder", label: "Placeholder", Icon: Layers },
+	{ href: "/placeholder2", label: "Placeholder 2", Icon: Settings },
+	{ href: "/placeholder3", label: "Placeholder 3", Icon: Music },
 ];
 
 export function NavBar() {
