@@ -1,0 +1,29 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// TODO: Yeah auto formatting doesn't work here fix later 
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// TODO: Table name?
+// TODO: Do I really wanna do this camelCase / snake_case thingy...?
+model GuestSession {
+  id           String   @id @default(cuid())
+  createdAt    DateTime @default(now()) @map("created_at")
+  expiresAt    DateTime @map("expires_at")
+  spotifyToken String?  @map("spotify_token")
+  youtubeToken String?  @map("youtube_token")
+
+  @@map("guest_session") // Prisma default is singural model and table names
+}
