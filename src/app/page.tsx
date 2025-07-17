@@ -59,7 +59,7 @@ export default function Page() {
 				</Card>
 			</div>
 
-			<p className="mt-12 max-w-md text-center text-sm">Spotify and YouTube supported. More platforms coming soon.</p>
+			<p className="text-md mt-12 max-w-md text-center">Spotify and YouTube supported. More platforms coming soon.</p>
 		</div>
 	);
 }
