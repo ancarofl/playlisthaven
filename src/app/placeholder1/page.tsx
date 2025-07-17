@@ -1,7 +1,0 @@
-export default function Page() {
-	return (
-		<div>
-			<h1 className="border-2 border-solid border-blue-500">PLACEHOLDER1</h1>
-		</div>
-	);
-}
