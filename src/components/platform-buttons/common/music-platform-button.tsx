@@ -6,22 +6,30 @@ import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 
-interface YouTubeButtonProps {
+interface MusicPlatformButtonProps {
+	logoLight: string;
+	logoDark?: string;
+	alt: string;
 	onClick?: () => void;
+	themeAware?: boolean;
 }
 
-export function YouTubeButton({ onClick }: YouTubeButtonProps) {
+export function MusicPlatformButton({
+	logoLight,
+	logoDark,
+	alt,
+	onClick,
+	themeAware = false,
+}: MusicPlatformButtonProps) {
 	const { resolvedTheme } = useTheme();
-	const [theme, setTheme] = useState<string>("light");
+	const [theme, setTheme] = useState("light");
 
 	// Sync theme only on client side after mount to prevent hydration mismatch. TODO: Improve...
 	useEffect(() => {
-		if (resolvedTheme) {
-			setTheme(resolvedTheme);
-		}
+		if (resolvedTheme) setTheme(resolvedTheme);
 	}, [resolvedTheme]);
 
-	const logoSrc = theme === "dark" ? "/logos/yt-dark.png" : "/logos/yt-light.png";
+	const logoSrc = themeAware && theme === "dark" && logoDark ? logoDark : logoLight;
 
 	return (
 		<Button
@@ -29,7 +37,7 @@ export function YouTubeButton({ onClick }: YouTubeButtonProps) {
 			onClick={onClick}
 			className="flex h-20 w-32 items-center justify-center border border-gray-400 p-0 dark:border-gray-600"
 		>
-			<Image src={logoSrc} alt="YouTube" width={120} height={36} priority style={{ maxWidth: "80%", height: "auto" }} />
+			<Image src={logoSrc} alt={alt} width={120} height={36} priority style={{ maxWidth: "80%", height: "auto" }} />
 		</Button>
 	);
 }
