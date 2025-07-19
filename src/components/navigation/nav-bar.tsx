@@ -4,9 +4,9 @@ import Link from "next/link";
 
 import { NAV_LINKS } from "@/constants/navigation";
 
+import { ThemeToggle } from "../theme-toggle";
 import { MobileNav } from "./mobile-nav";
 import { NavLink } from "./nav-link";
-import { ThemeToggle } from "./theme-toggle";
 
 export function NavBar() {
 	return (
