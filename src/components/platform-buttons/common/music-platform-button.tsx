@@ -14,6 +14,8 @@ interface MusicPlatformButtonProps {
 	themeAware?: boolean;
 }
 
+/* TODO: Logos start as light logo till the theme is known - so there will be a flash of different coloured logo(s) IF the user has dark as system setting/has visited before and has selected dark theme. 
+Seems tricky to fix completely, haven't found a solution yet. Might not need to worry about it at all, recheck after colour palette is fully done. */
 export function MusicPlatformButton({
 	logoLight,
 	logoDark,
@@ -24,7 +26,6 @@ export function MusicPlatformButton({
 	const { resolvedTheme } = useTheme();
 	const [theme, setTheme] = useState("light");
 
-	// Sync theme only on client side after mount to prevent hydration mismatch. TODO: Improve...
 	useEffect(() => {
 		if (resolvedTheme) setTheme(resolvedTheme);
 	}, [resolvedTheme]);
