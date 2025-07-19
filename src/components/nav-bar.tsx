@@ -1,23 +1,12 @@
 "use client";
 
-import { Copy, UserPlus } from "lucide-react";
 import Link from "next/link";
 
-import { MobileNav } from "./mobile-nav";
-import { ThemeToggle } from "./theme-toggle";
+import { NAV_LINKS } from "@/constants/navigation";
 
-// TODO: Yes update
-const links = [
-	{ href: "/copy", label: "Quick Playlist Copy", Icon: Copy }, //  TODO: Name?
-	{ href: "/signup", label: "Join PlaylistHaven", Icon: UserPlus }, // TODO: NAME 2 IDK MAN
-	/* 	{ href: "/placeholder", label: "Placeholder", Icon: Music },
-	{ href: "/placeholder2", label: "Placeholder2", Icon: Music },
-	{ href: "/placeholder3", label: "Placeholder3", Icon: Music },
-	{ href: "/placeholder4", label: "Placeholder4", Icon: Music },
-	{ href: "/placeholder5", label: "Placeholder5", Icon: Music },
-	{ href: "/placeholder6", label: "Placeholder6", Icon: Music },
-	{ href: "/placeholder7", label: "Placeholder7", Icon: Music }, */
-];
+import { MobileNav } from "./mobile-nav";
+import { NavLink } from "./nav-link";
+import { ThemeToggle } from "./theme-toggle";
 
 export function NavBar() {
 	return (
@@ -26,7 +15,7 @@ export function NavBar() {
 			aria-label="Primary navigation"
 		>
 			<div className="flex items-center">
-				<MobileNav links={links} />
+				<MobileNav />
 				<Link href="/" className="p-2 text-lg font-bold">
 					PlaylistHaven
 				</Link>
@@ -34,10 +23,8 @@ export function NavBar() {
 
 			<div className="hidden justify-center overflow-x-auto md:flex">
 				<div className="flex flex-wrap justify-center gap-x-6 gap-y-2">
-					{links.map((link) => (
-						<Link key={link.href} href={link.href} className="text-md hover:underline">
-							{link.label}
-						</Link>
+					{NAV_LINKS.map(({ href, label }) => (
+						<NavLink key={href} href={href} label={label} />
 					))}
 				</div>
 			</div>
