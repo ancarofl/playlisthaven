@@ -8,20 +8,20 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 export default function Page() {
 	return (
 		<div className="m-auto mt-6 flex min-h-screen max-w-5xl flex-col items-center gap-y-12">
-			<h1 className="text-center text-4xl font-bold text-blue-600">Welcome to PlaylistHaven</h1>
+			<h1 className="text-center text-5xl font-bold text-blue-600">Welcome to PlaylistHaven</h1>
 
-			<div className="text-center text-2xl">
+			<div className="w-full text-center text-3xl">
 				<p>Copy your playlists from one music platform to another.</p>
 
-				<p className="my-2 max-w-xl text-center text-3xl font-bold">Fast. Simple. Secure.</p>
+				<p className="my-2 text-center text-4xl font-bold">Fast. Simple. Secure.</p>
 			</div>
 
 			<div className="grid w-full grid-cols-1 gap-10 md:grid-cols-2">
 				<Card>
 					<CardHeader>
-						<CardTitle className="text-2xl text-green-700">Quick Copy</CardTitle>
+						<CardTitle className="text-3xl text-green-700">Quick Copy</CardTitle>
 					</CardHeader>
-					<CardContent className="flex flex-col gap-6">
+					<CardContent className="flex flex-col gap-6 text-lg">
 						<ul className="list-inside list-disc">
 							<li>Copy one playlist at a time</li>
 							<li>100% free</li>
@@ -32,7 +32,7 @@ export default function Page() {
 						</Link>
 					</CardContent>
 					<CardFooter>
-						<span className="w-full text-center text-sm">
+						<span className="text-md w-full text-center">
 							No PlaylistHaven account needed. Only temporary playlist access is required.
 						</span>
 					</CardFooter>
@@ -40,9 +40,9 @@ export default function Page() {
 
 				<Card>
 					<CardHeader>
-						<CardTitle className="text-2xl text-blue-700">Join PlaylistHaven</CardTitle>
+						<CardTitle className="text-3xl text-blue-700">Join PlaylistHaven</CardTitle>
 					</CardHeader>
-					<CardContent className="flex flex-col gap-6">
+					<CardContent className="flex flex-col gap-6 text-lg">
 						<ul className="list-inside list-disc">
 							<li>Keep playlists on different platforms synced</li>
 							<li>Copy multiple playlists at once</li>
@@ -54,12 +54,12 @@ export default function Page() {
 						</Link>
 					</CardContent>
 					<CardFooter>
-						<span className="w-full text-center text-sm">Enjoy a wide range of free and premium features.</span>
+						<span className="text-md w-full text-center">Enjoy a wide range of free and premium features.</span>
 					</CardFooter>
 				</Card>
 			</div>
 
-			<p className="text-md mt-12 max-w-md text-center">Spotify and YouTube supported. More platforms coming soon.</p>
+			<p className="mt-12 text-center text-lg">Spotify and YouTube supported. More platforms coming soon.</p>
 		</div>
 	);
 }
