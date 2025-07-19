@@ -37,7 +37,7 @@ export function MusicPlatformButton({
 			onClick={onClick}
 			className="flex h-20 w-32 items-center justify-center border border-gray-400 p-0 dark:border-gray-600"
 		>
-			<Image src={logoSrc} alt={alt} width={120} height={36} priority style={{ maxWidth: "80%", height: "auto" }} />
+			<Image src={logoSrc} alt={alt} width={120} height={36} priority className="h-auto max-w-[80%]" />
 		</Button>
 	);
 }
