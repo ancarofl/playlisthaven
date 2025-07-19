@@ -4,10 +4,11 @@ import Link from "next/link";
 
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 export default function Page() {
 	return (
-		<div className="m-auto mt-6 flex min-h-screen max-w-5xl flex-col items-center gap-y-12">
+		<div className="m-auto mt-6 flex max-w-5xl flex-col items-center gap-y-12">
 			<h1 className="text-center text-5xl font-bold text-blue-600">Welcome to PlaylistHaven</h1>
 
 			<div className="w-full text-center text-3xl">
@@ -27,7 +28,8 @@ export default function Page() {
 							<li>100% free</li>
 							<li>Great for one-time use!</li>
 						</ul>
-						<Link href="/copy" className={buttonVariants({ variant: "green" })}>
+						{/* TODO: button variant maybe */}
+						<Link href="/copy" className={cn(buttonVariants({ variant: "green" }), "text-lg")}>
 							Start Quick Copy
 						</Link>
 					</CardContent>
@@ -49,7 +51,8 @@ export default function Page() {
 							<li>Copy to multiple target platforms at once</li>
 							<li>More convenient for power users: saved platform connections reduce repeated authorizations</li>
 						</ul>
-						<Link href="/signup" className={buttonVariants({ variant: "blue" })}>
+						{/* TODO: button variant maybe */}
+						<Link href="/signup" className={cn(buttonVariants({ variant: "blue" }), "text-lg")}>
 							Sign Up
 						</Link>
 					</CardContent>
