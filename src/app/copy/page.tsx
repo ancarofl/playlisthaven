@@ -1,7 +1,7 @@
 "use client";
 
-import { SpotifyButton } from "@/components/spotify-button";
-import { YouTubeButton } from "@/components/youtube-button";
+import { SpotifyButton } from "@/components/platform-buttons/spotify-button";
+import { YouTubeButton } from "@/components/platform-buttons/youtube-button";
 
 function Placeholder() {
 	return (
