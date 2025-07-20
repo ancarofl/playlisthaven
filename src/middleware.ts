@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { guestSessionMiddleware } from "./app/middleware/guest-session";
+import { guestSessionMiddleware } from "./app/middlewares/guest-session";
 
 export function middleware(req: NextRequest) {
 	// Start with the default response
