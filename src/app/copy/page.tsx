@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { MusicPlatformButton } from "@/components/platform-buttons/common/music-platform-button";
+import { MusicPlatformButton } from "@/components/music-platform-button";
 import { PlatformKey, PLATFORMS } from "@/constants/platforms";
 
 function Placeholder() {
