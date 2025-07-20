@@ -5,28 +5,23 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { PlatformKey, PLATFORMS } from "@/constants/platforms";
+import { Platform } from "@/types/platforms";
 
 interface MusicPlatformButtonProps {
-	logoLight: string;
-	logoDark?: string;
-	alt: string;
+	platformKey: PlatformKey;
 	onClick?: () => void;
-	themeAware?: boolean;
 	isSelected: boolean;
 }
 
-/* TODO: Logos start as light logo till the theme is known - so there will be a flash of different coloured logo(s) IF the user has dark as system setting/has visited before and has selected dark theme. 
-Seems tricky to fix completely, haven't found a solution yet. Might not need to worry about it at all, recheck after colour palette is fully done. 
-Could use a single logo and use CSS but the YT logos are pngs... yeah come back to this later.
-*/
-export function MusicPlatformButton({
-	logoLight,
-	logoDark,
-	alt,
-	onClick,
-	themeAware = false,
-	isSelected = false,
-}: MusicPlatformButtonProps) {
+function getPlatformLogo(platform: Platform, theme: string): string {
+	if (platform.themeAware && theme === "dark" && platform.logoDark) {
+		return platform.logoDark;
+	}
+	return platform.logoLight;
+}
+
+export function MusicPlatformButton({ platformKey, onClick, isSelected }: MusicPlatformButtonProps) {
 	const { resolvedTheme } = useTheme();
 	const [theme, setTheme] = useState("light");
 
@@ -34,10 +29,10 @@ export function MusicPlatformButton({
 		if (resolvedTheme) setTheme(resolvedTheme);
 	}, [resolvedTheme]);
 
-	const logoSrc = themeAware && theme === "dark" && logoDark ? logoDark : logoLight;
+	const platform = PLATFORMS.find((p): p is Platform => p.key === platformKey);
+	if (!platform) return null;
 
 	return (
-		// TODO: Styles, particularly hover.
 		<Button
 			variant="ghost"
 			onClick={onClick}
@@ -49,7 +44,15 @@ export function MusicPlatformButton({
 						"border-gray-400 dark:border-gray-600"
 			}`}
 		>
-			<Image src={logoSrc} alt={alt} width={120} height={36} priority className="h-auto max-w-[80%]" />
+			{/* TO DO: Do not harcode w h like this */}
+			<Image
+				src={getPlatformLogo(platform, theme)}
+				alt={platform.alt}
+				width={120}
+				height={36}
+				priority
+				className="h-auto max-w-[80%]"
+			/>
 		</Button>
 	);
 }

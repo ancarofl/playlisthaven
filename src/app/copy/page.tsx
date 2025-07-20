@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 
-import { SpotifyButton } from "@/components/platform-buttons/spotify-button";
-import { YouTubeButton } from "@/components/platform-buttons/youtube-button";
+import { MusicPlatformButton } from "@/components/platform-buttons/common/music-platform-button";
+import { PlatformKey, PLATFORMS } from "@/constants/platforms";
 
 function Placeholder() {
 	return (
@@ -14,38 +14,36 @@ function Placeholder() {
 }
 
 export default function Page() {
-	const [selectedSource, setSelectedSource] = useState<string | null>(null);
-	const [selectedTarget, setSelectedTarget] = useState<string | null>(null);
+	const [selectedSource, setSelectedSource] = useState<PlatformKey | null>(null);
+	const [selectedTarget, setSelectedTarget] = useState<PlatformKey | null>(null);
 
-	const handleSourceSelect = (platform: string) => {
-		setSelectedSource((prev) => (prev === platform ? null : platform));
+	const sourcePlatforms = PLATFORMS.filter((p) => p.key !== selectedTarget);
+	const targetPlatforms = PLATFORMS.filter((p) => p.key !== selectedSource);
+
+	const handleSourceSelect = (platformKey: PlatformKey) => {
+		setSelectedSource((prev) => (prev === platformKey ? null : platformKey));
 	};
 
-	const handleTargetSelect = (platform: string) => {
-		setSelectedTarget((prev) => (prev === platform ? null : platform));
+	const handleTargetSelect = (platformKey: PlatformKey) => {
+		setSelectedTarget((prev) => (prev === platformKey ? null : platformKey));
 	};
-
-	const allPlatforms = ["spotify", "youtube"];
-
-	const sourcePlatforms = allPlatforms.filter((p) => p !== selectedTarget);
-	const targetPlatforms = allPlatforms.filter((p) => p !== selectedSource);
 
 	return (
 		<div className="m-auto mt-6 flex flex-col gap-y-12">
-			<div>
-				<h1 className="text-center text-3xl font-semibold">Select source and target platform</h1>
-			</div>
+			<h1 className="text-center text-3xl font-semibold">Select source and target platform</h1>
 
 			<div className="grid grid-cols-1 gap-12 md:grid-cols-2">
 				<div className="flex flex-col items-center gap-6">
 					<h2 className="text-2xl">Source</h2>
 					<div className="flex flex-wrap justify-center gap-3">
-						{sourcePlatforms.includes("spotify") && (
-							<SpotifyButton isSelected={selectedSource === "spotify"} onClick={() => handleSourceSelect("spotify")} />
-						)}
-						{sourcePlatforms.includes("youtube") && (
-							<YouTubeButton isSelected={selectedSource === "youtube"} onClick={() => handleSourceSelect("youtube")} />
-						)}
+						{sourcePlatforms.map(({ key }) => (
+							<MusicPlatformButton
+								key={key}
+								platformKey={key}
+								isSelected={selectedSource === key}
+								onClick={() => handleSourceSelect(key)}
+							/>
+						))}
 						{[...Array(18)].map((_, i) => (
 							<Placeholder key={`source-placeholder-${i}`} />
 						))}
@@ -55,12 +53,14 @@ export default function Page() {
 				<div className="flex flex-col items-center gap-6">
 					<h2 className="text-2xl">Target</h2>
 					<div className="flex flex-wrap justify-center gap-3">
-						{targetPlatforms.includes("spotify") && (
-							<SpotifyButton isSelected={selectedTarget === "spotify"} onClick={() => handleTargetSelect("spotify")} />
-						)}
-						{targetPlatforms.includes("youtube") && (
-							<YouTubeButton isSelected={selectedTarget === "youtube"} onClick={() => handleTargetSelect("youtube")} />
-						)}
+						{targetPlatforms.map(({ key }) => (
+							<MusicPlatformButton
+								key={key}
+								platformKey={key}
+								isSelected={selectedTarget === key}
+								onClick={() => handleTargetSelect(key)}
+							/>
+						))}
 						{[...Array(18)].map((_, i) => (
 							<Placeholder key={`target-placeholder-${i}`} />
 						))}
