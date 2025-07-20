@@ -4,9 +4,10 @@ import { MusicPlatformButton } from "./common/music-platform-button";
 
 interface YouTubeButtonProps {
 	onClick?: () => void;
+	isSelected: boolean;
 }
 
-export function YouTubeButton({ onClick }: YouTubeButtonProps) {
+export function YouTubeButton({ onClick, isSelected }: YouTubeButtonProps) {
 	return (
 		<MusicPlatformButton
 			logoLight="/logos/yt-light.png"
@@ -14,6 +15,7 @@ export function YouTubeButton({ onClick }: YouTubeButtonProps) {
 			alt="YouTube"
 			themeAware={true}
 			onClick={onClick}
+			isSelected={isSelected}
 		/>
 	);
 }
