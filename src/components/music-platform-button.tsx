@@ -21,6 +21,9 @@ function getPlatformLogo(platform: Platform, theme: string): string {
 	return platform.logoLight;
 }
 
+/* TODO: Logos start as light logo till the theme is known - so there will be a flash of different coloured logo(s) IF the user has dark as system setting/has visited before and has selected dark theme. 
+Seems tricky to fix completely, haven't found a solution yet. Might not need to worry about it at all, recheck after colour palette is fully done. 
+Could use a single logo and use CSS but the YT logos are pngs... yeah come back to this later. */
 export function MusicPlatformButton({ platformKey, onClick, isSelected }: MusicPlatformButtonProps) {
 	const { resolvedTheme } = useTheme();
 	const [theme, setTheme] = useState("light");

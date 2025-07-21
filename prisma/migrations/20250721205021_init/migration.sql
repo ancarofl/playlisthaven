@@ -22,6 +22,7 @@ CREATE TABLE "user_connection" (
     "id" TEXT NOT NULL,
     "provider" TEXT NOT NULL,
     "access_token" TEXT NOT NULL,
+    "refresh_token" TEXT NOT NULL,
     "expires_at" TIMESTAMP(3),
     "guest_session_id" TEXT,
     "user_id" TEXT,
@@ -33,13 +34,13 @@ CREATE TABLE "user_connection" (
 CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
 
 -- CreateIndex
-CREATE INDEX "user_connection_user_id_provider_idx" ON "user_connection"("user_id", "provider");
+CREATE UNIQUE INDEX "user_connection_guest_session_id_provider_key" ON "user_connection"("guest_session_id", "provider");
 
 -- CreateIndex
-CREATE INDEX "user_connection_guest_session_id_provider_idx" ON "user_connection"("guest_session_id", "provider");
+CREATE UNIQUE INDEX "user_connection_user_id_provider_key" ON "user_connection"("user_id", "provider");
 
 -- AddForeignKey
-ALTER TABLE "user_connection" ADD CONSTRAINT "user_connection_guest_session_id_fkey" FOREIGN KEY ("guest_session_id") REFERENCES "guest_session"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "user_connection" ADD CONSTRAINT "user_connection_guest_session_id_fkey" FOREIGN KEY ("guest_session_id") REFERENCES "guest_session"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "user_connection" ADD CONSTRAINT "user_connection_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "user_connection" ADD CONSTRAINT "user_connection_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
