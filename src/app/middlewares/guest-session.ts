@@ -21,8 +21,9 @@ export function guestSessionMiddleware(req: NextRequest, res: NextResponse): Nex
 			/* When and how cokies are sent in cross-site requests. 
 			Prevent CSRF. 
 			TODO: Might need to change this for OAuth! 
-			TODO: This is also not sent if the protocol differs, not sure if I care about that? */
-			sameSite: "strict",
+			TODO: This is also not sent if the protocol differs, not sure if I care about that? 
+			HAD TO BE CHANGED FOR OAUTH YES. HAVE ANOTHER LOOK. HOW DOES IT DIFFER IF MODAL OR STH? */
+			sameSite: "lax",
 		});
 	}
 
