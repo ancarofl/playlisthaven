@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export function guestSessionMiddleware(req: NextRequest, res: NextResponse): NextResponse {
-	const COOKIE_NAME = "playlisthaven_guest_session";
+import { COOKIE_NAME } from "@/constants/constants";
 
+export function guestSessionMiddleware(req: NextRequest, res: NextResponse): NextResponse {
 	// Check if the guest session cookie already exists
 	const existingCookie = req.cookies.get(COOKIE_NAME);
 

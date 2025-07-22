@@ -28,6 +28,33 @@ export default function Page() {
 		setSelectedTarget((prev) => (prev === platformKey ? null : platformKey));
 	};
 
+	async function handlePlatformClick(platformKey: PlatformKey, type: "source" | "target") {
+		// TODO: Disable button while this is happening??? What is "this" xD
+
+		// TODO: Try catch
+		const res = await fetch(`/api/connections/${platformKey}`);
+		const data = await res.json(); // TODO: type :)
+
+		// If missing session
+		if (res.status === 401 && data.code === "NO_SESSION") {
+			// TODO: Replace with modal/toast!
+			alert("This feature requires cookies. Please enable cookies in your browser and reload.");
+			return;
+		}
+
+		// If connected, set the selected platform
+		if (data.connected) {
+			if (type === "source") handleSourceSelect(platformKey);
+			else handleTargetSelect(platformKey);
+		} else if (data.authUrl) {
+			// Otherwise, IF an OAuth URL exists, redirect to it
+			window.location.href = data.authUrl;
+		} else {
+			// Otherwise IDK what is wrong :)))))
+			alert("Unknown error occurred.");
+		}
+	}
+
 	return (
 		<div className="m-auto mt-6 flex flex-col gap-y-12">
 			<h1 className="text-center text-3xl font-semibold">Select source and target platform</h1>
@@ -41,7 +68,7 @@ export default function Page() {
 								key={key}
 								platformKey={key}
 								isSelected={selectedSource === key}
-								onClick={() => handleSourceSelect(key)}
+								onClick={() => handlePlatformClick(key, "source")}
 							/>
 						))}
 						{[...Array(18)].map((_, i) => (
@@ -58,7 +85,7 @@ export default function Page() {
 								key={key}
 								platformKey={key}
 								isSelected={selectedTarget === key}
-								onClick={() => handleTargetSelect(key)}
+								onClick={() => handlePlatformClick(key, "target")}
 							/>
 						))}
 						{[...Array(18)].map((_, i) => (
