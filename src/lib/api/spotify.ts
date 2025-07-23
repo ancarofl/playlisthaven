@@ -1,3 +1,6 @@
+const SPOTIFY_AUTHORIZE_URL = "https://accounts.spotify.com/authorize";
+export const SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token";
+
 export function getSpotifyAuthUrl(sessionId: string): string {
 	const params = new URLSearchParams({
 		client_id: process.env.SPOTIFY_CLIENT_ID!,
@@ -8,5 +11,5 @@ export function getSpotifyAuthUrl(sessionId: string): string {
 		show_dialog: "true",
 	});
 
-	return `https://accounts.spotify.com/authorize?${params.toString()}`;
+	return `${SPOTIFY_AUTHORIZE_URL}?${params.toString()}`;
 }

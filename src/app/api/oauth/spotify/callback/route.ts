@@ -1,42 +1,40 @@
 import { NextResponse } from "next/server";
 
-import { saveConnectionTokens } from "@/services/connection";
+import { APIError, InternalServerError } from "@/lib/errors";
+import { exchangeSpotifyCodeForTokens } from "@/services/spotify-auth-service";
+import { errorResponse } from "@/utils/api";
 
-// TODO
+// Handles Spotify OAuth callback, exchanges code for tokens, saves connection, and redirects.
 export async function GET(req: Request) {
-	const { searchParams } = new URL(req.url);
-	const code = searchParams.get("code");
-	const sessionId = searchParams.get("state");
+	try {
+		const { searchParams } = new URL(req.url);
+		const code = searchParams.get("code");
+		const sessionId = searchParams.get("state");
 
-	if (!code || !sessionId) {
-		return new Response("Missing code or session", { status: 400 });
+		// If missing, return 400 with JSON error
+		if (!code || !sessionId) {
+			return errorResponse(
+				new APIError({
+					error: "bad_request",
+					message: "Missing code or session",
+					status: 400,
+				}),
+			);
+		}
+
+		await exchangeSpotifyCodeForTokens({ code, sessionId });
+
+		// Redirect to homepage after success
+		return NextResponse.redirect(new URL("/", req.url));
+	} catch (err) {
+		// TODO: Log this in Sentry probably
+		// Handles ALL unexpected errors (fetch fails, save fails, etc)
+		console.error("Spotify OAuth callback error:", err);
+
+		if (err instanceof APIError) {
+			return errorResponse(err);
+		}
+
+		return errorResponse(new InternalServerError("Spotify OAuth callback error"));
 	}
-
-	const res = await fetch("https://accounts.spotify.com/api/token", {
-		method: "POST",
-		headers: {
-			Authorization:
-				"Basic " +
-				Buffer.from(`${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`).toString("base64"),
-			"Content-Type": "application/x-www-form-urlencoded",
-		},
-		body: new URLSearchParams({
-			grant_type: "authorization_code",
-			code,
-			redirect_uri: process.env.SPOTIFY_REDIRECT_URI!,
-		}),
-	});
-
-	const data = await res.json();
-	if (!res.ok) return NextResponse.json(data, { status: 400 });
-
-	await saveConnectionTokens({
-		sessionId,
-		provider: "spotify",
-		accessToken: data.access_token,
-		refreshToken: data.refresh_token,
-		expiresAt: new Date(Date.now() + data.expires_in * 1000),
-	});
-
-	return NextResponse.redirect(new URL("/", req.url));
 }
