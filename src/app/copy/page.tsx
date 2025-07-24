@@ -5,6 +5,12 @@ import { useState } from "react";
 import { MusicPlatformButton } from "@/components/music-platform-button";
 import { PlatformKey, PLATFORMS } from "@/constants/platforms";
 
+// TODO: Toast not alert
+function showError(msg: string, error?: unknown) {
+	if (error) console.error(msg, error);
+	alert(msg);
+}
+
 function Placeholder() {
 	return (
 		<div className="flex h-20 w-32 items-center justify-center rounded border border-dashed border-gray-400 text-gray-500 dark:border-gray-600 dark:text-gray-400">
@@ -31,27 +37,43 @@ export default function Page() {
 	async function handlePlatformClick(platformKey: PlatformKey, type: "source" | "target") {
 		// TODO: Disable button while this is happening??? What is "this" xD
 
-		// TODO: Try catch
-		const res = await fetch(`/api/connections/${platformKey}`);
-		const data = await res.json(); // TODO: type :)
+		try {
+			const res = await fetch(`/api/connections/${platformKey}`);
+			const body = await res.json();
 
-		// If missing session
-		if (res.status === 401 && data.code === "NO_SESSION") {
-			// TODO: Replace with modal/toast!
-			alert("This feature requires cookies. Please enable cookies in your browser and reload.");
-			return;
-		}
+			// Error - request not ok aka status not 2xx
+			if (!res.ok) {
+				// Error - session missing
+				if (res.status === 401 && body.error === "no_session") {
+					showError("This feature requires cookies. Please enable cookies in your browser and reload.");
+				}
+				// Error - other
+				else {
+					showError(body.message || "Unknown error occurred.");
+				}
+				return;
+			}
 
-		// If connected, set the selected platform
-		if (data.connected) {
-			if (type === "source") handleSourceSelect(platformKey);
-			else handleTargetSelect(platformKey);
-		} else if (data.authUrl) {
-			// Otherwise, IF an OAuth URL exists, redirect to it
-			window.location.href = data.authUrl;
-		} else {
-			// Otherwise IDK what is wrong :)))))
-			alert("Unknown error occurred.");
+			if (body.data) {
+				// Success - connected - set the selected platform
+				if (body.data.connected) {
+					if (type === "source") handleSourceSelect(platformKey);
+					else handleTargetSelect(platformKey);
+					return;
+				}
+
+				// Success - needs OAuth
+				if (body.data.authUrl) {
+					window.location.href = body.data.authUrl;
+					return;
+				}
+			}
+
+			// Weird/unexpected response
+			showError("Something unexpected happened. Please try again later.");
+			console.error("Unexpected API response:", body);
+		} catch (err) {
+			showError("Could not connect to server. Please try again.", err);
 		}
 	}
 

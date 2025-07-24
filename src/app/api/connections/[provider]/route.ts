@@ -1,11 +1,10 @@
 import { cookies } from "next/headers";
 
-import { COOKIE_NAME } from "@/constants/constants";
+import { COOKIE_NAME } from "@/constants";
 import { PlatformKey } from "@/constants/platforms";
 import { providerAuthStatusController } from "@/controllers/provider-auth-status-controller";
 import { providerAuthUrlController } from "@/controllers/provider-auth-url-controller";
-import { APIError, InternalServerError } from "@/lib/errors";
-import { errorResponse } from "@/utils/api";
+import { errorResponse, successResponse } from "@/lib/json-response";
 
 export async function GET(_: Request, { params }: { params: { provider: PlatformKey } }) {
 	try {
@@ -25,11 +24,8 @@ export async function GET(_: Request, { params }: { params: { provider: Platform
 			};
 		}
 
-		return Response.json(response);
+		return successResponse(response);
 	} catch (err) {
-		if (err instanceof APIError) {
-			return errorResponse(err);
-		}
-		return errorResponse(new InternalServerError());
+		return errorResponse(err);
 	}
 }

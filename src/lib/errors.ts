@@ -1,3 +1,4 @@
+// Base API error(exception) class
 export class APIError extends Error {
 	error: string;
 	status: number;
@@ -8,13 +9,12 @@ export class APIError extends Error {
 	}
 }
 
-// TODO: Create one custom error class for each common status code which accepts a message and has a default message
-
+// Custom error classes. TODO: Create one custom error class for each common status code which accepts a message and has a default message
 // Generic server error
 export class InternalServerError extends APIError {
 	constructor(message = "Something went wrong.") {
 		super({
-			error: "internal_error",
+			error: "internal_server_error",
 			message,
 			status: 500,
 		});
@@ -24,7 +24,7 @@ export class InternalServerError extends APIError {
 export class MissingSessionError extends APIError {
 	constructor() {
 		super({
-			error: "missing_session",
+			error: "no_session",
 			message: "Session cookie not found. This feature requires cookies.",
 			status: 401,
 		});

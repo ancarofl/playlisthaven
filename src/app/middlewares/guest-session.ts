@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { COOKIE_NAME } from "@/constants/constants";
+import { COOKIE_NAME } from "@/constants";
 
 export function guestSessionMiddleware(req: NextRequest, res: NextResponse): NextResponse {
 	// Check if the guest session cookie already exists

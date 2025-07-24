@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 
-import { APIError, InternalServerError } from "@/lib/errors";
-import { exchangeSpotifyCodeForTokens } from "@/services/spotify-auth-service";
-import { errorResponse } from "@/utils/api";
+import { APIError } from "@/lib/errors";
+import { errorResponse } from "@/lib/json-response";
+import { exchangeSpotifyCodeForTokens } from "@/services/spotify/auth-service";
 
 // Handles Spotify OAuth callback, exchanges code for tokens, saves connection, and redirects.
 export async function GET(req: Request) {
@@ -25,16 +25,10 @@ export async function GET(req: Request) {
 		await exchangeSpotifyCodeForTokens({ code, sessionId });
 
 		// Redirect to homepage after success
-		return NextResponse.redirect(new URL("/", req.url));
+		return NextResponse.redirect(new URL("/copy", req.url));
 	} catch (err) {
 		// TODO: Log this in Sentry probably
-		// Handles ALL unexpected errors (fetch fails, save fails, etc)
 		console.error("Spotify OAuth callback error:", err);
-
-		if (err instanceof APIError) {
-			return errorResponse(err);
-		}
-
-		return errorResponse(new InternalServerError("Spotify OAuth callback error"));
+		return errorResponse(err);
 	}
 }
