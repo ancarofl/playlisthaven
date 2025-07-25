@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 import { APIError } from "@/lib/errors";
 import { errorResponse } from "@/lib/json-response";
-import { exchangeSpotifyCodeForTokens } from "@/services/spotify/auth-service";
+import { exchangeYouTubeCodeForTokens } from "@/services/youtube/oauth-service";
 
 export async function GET(req: Request) {
 	try {
@@ -21,13 +21,13 @@ export async function GET(req: Request) {
 			);
 		}
 
-		await exchangeSpotifyCodeForTokens({ code, sessionId });
+		await exchangeYouTubeCodeForTokens({ code, sessionId });
 
 		// Redirect to homepage after success
 		return NextResponse.redirect(new URL("/copy", req.url));
 	} catch (err) {
 		// TODO: Log this in Sentry probably
-		console.error("Spotify OAuth callback error:", err);
+		console.error("YouTube OAuth callback error:", err);
 		return errorResponse(err);
 	}
 }
