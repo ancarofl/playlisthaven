@@ -13,12 +13,10 @@ export async function GET(req: Request, { params }: { params: { provider: string
 
 		await oauthCallbackController(provider, searchParams);
 
-		// Redirect to copy page after success
-		console.log(`Redirect in ${`provider`}/oauth/callback`);
+		// Redirect to copy page after success. TODO: Always redirect there? Should depend on the source of the oauth no? FOR NOW it's only copy
+		// TODO: Should I care about the session here? PROBABLY?!
 		return NextResponse.redirect(new URL("/copy", req.url));
 	} catch (err) {
-		// TODO: Log this in Sentry probably
-		console.error(`${params.provider} Oauth callback error:`, err);
 		return errorResponse(err);
 	}
 }
