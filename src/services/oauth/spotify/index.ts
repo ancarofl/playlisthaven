@@ -1,10 +1,11 @@
 import { SPOTIFY_AUTHORIZE_URL, SPOTIFY_TOKEN_URL } from "@/constants/platforms";
 import { InternalServerError } from "@/helpers/errors";
 import { saveConnectionTokens } from "@/services/provider-connection-service";
-import { OauthService } from "@/types/oauth";
+import { OauthService, StateObj } from "@/types/oauth";
 
 export const spotifyOauthService: OauthService = {
-	getAuthorizationUrl(state: string): string {
+	getAuthorizationUrl(stateObj: StateObj): string {
+		const state = encodeURIComponent(JSON.stringify(stateObj));
 		const params = new URLSearchParams({
 			client_id: process.env.SPOTIFY_CLIENT_ID!,
 			response_type: "code",

@@ -1,14 +1,16 @@
 import { YOUTUBE_AUTHORIZE_URL, YOUTUBE_TOKEN_URL } from "@/constants/platforms";
 import { InternalServerError } from "@/helpers/errors";
 import { saveConnectionTokens } from "@/services/provider-connection-service";
+import { OauthService, StateObj } from "@/types/oauth";
 
 interface ExchangeTokensArgs {
 	code: string;
 	sessionId: string;
 }
 
-export const youtubeOauthService = {
-	getAuthorizationUrl(state: string): string {
+export const youtubeOauthService: OauthService = {
+	getAuthorizationUrl(stateObj: StateObj): string {
+		const state = encodeURIComponent(JSON.stringify(stateObj));
 		const params = new URLSearchParams({
 			client_id: process.env.YOUTUBE_CLIENT_ID!,
 			redirect_uri: process.env.YOUTUBE_REDIRECT_URI!,

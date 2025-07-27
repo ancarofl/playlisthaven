@@ -1,6 +1,7 @@
 import { PlatformKey } from "@/constants/platforms";
 import { oauthStatusController } from "@/controllers/oauth/status-controller";
 import { getSessionIdFromCookies } from "@/helpers/cookies";
+import { MissingSessionError } from "@/helpers/errors";
 import { errorResponse, successResponse } from "@/helpers/json-response";
 import { buildOauthUrl } from "@/helpers/oauth-url";
 
@@ -9,6 +10,7 @@ export async function GET(_: Request, { params }: { params: { provider: Platform
 	try {
 		const { provider } = params;
 		const sessionId = await getSessionIdFromCookies();
+		if (!sessionId) throw new MissingSessionError();
 
 		const result = await oauthStatusController(sessionId, provider);
 

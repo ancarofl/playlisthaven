@@ -4,8 +4,13 @@ export interface OauthCallbackParams {
 }
 
 export interface OauthService {
-	getAuthorizationUrl(state: string): string;
+	getAuthorizationUrl(state: StateObj): string;
 	exchangeCodeForTokens(args: { code: string; sessionId: string }): Promise<void>; // Function which performs side effects and resolves with no meaningful value, hence <void> // TODO: Can it be improved?
+}
+
+export interface StateObj {
+	sessionId: string;
+	type: "source" | "target";
 }
 
 export interface TokenResponse {
