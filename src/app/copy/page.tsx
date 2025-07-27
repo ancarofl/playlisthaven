@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { MusicPlatformButton } from "@/components/music-platform-button";
+import { SELECTED_SOURCE_KEY, SELECTED_TARGET_KEY } from "@/constants";
 import { PlatformKey, PLATFORMS } from "@/constants/platforms";
 
 // TODO: Toast not alert
@@ -26,12 +27,74 @@ export default function Page() {
 	const sourcePlatforms = PLATFORMS.filter((p) => p.key !== selectedTarget);
 	const targetPlatforms = PLATFORMS.filter((p) => p.key !== selectedSource);
 
-	const handleSourceSelect = (platformKey: PlatformKey) => {
-		setSelectedSource((prev) => (prev === platformKey ? null : platformKey));
+	// TODO: Temppp
+	useEffect(() => {
+		const url = new URL(window.location.href);
+		const connectedProvider = url.searchParams.get("connectedProvider");
+		const connectedType = url.searchParams.get("connectedType");
+
+		if (
+			connectedProvider &&
+			connectedType &&
+			PLATFORMS.some((p) => p.key === connectedProvider) &&
+			(connectedType === "source" || connectedType === "target")
+		) {
+			// Determine opposite type key
+			const oppositeType = connectedType === "source" ? "target" : "source";
+
+			// Load opposite from storage
+			const oppositeStorageKey = oppositeType === "source" ? SELECTED_SOURCE_KEY : SELECTED_TARGET_KEY;
+			const oppositeProvider = localStorage.getItem(oppositeStorageKey) as PlatformKey | null;
+
+			// Save connected provider/type to storage
+			const currentStorageKey = connectedType === "source" ? SELECTED_SOURCE_KEY : SELECTED_TARGET_KEY;
+			localStorage.setItem(currentStorageKey, connectedProvider);
+
+			// Set state for both
+			if (connectedType === "source") {
+				setSelectedSource(connectedProvider as PlatformKey);
+				setSelectedTarget(oppositeProvider);
+			} else {
+				setSelectedTarget(connectedProvider as PlatformKey);
+				setSelectedSource(oppositeProvider);
+			}
+
+			// Clean URL params
+			url.searchParams.delete("connectedProvider");
+			url.searchParams.delete("connectedType");
+			window.history.replaceState({}, "", url.toString());
+		} else {
+			// No URL params, fallback to localStorage normally
+			const savedSource = localStorage.getItem(SELECTED_SOURCE_KEY) as PlatformKey | null;
+			const savedTarget = localStorage.getItem(SELECTED_TARGET_KEY) as PlatformKey | null;
+
+			setSelectedSource(savedSource);
+			setSelectedTarget(savedTarget);
+		}
+	}, []);
+
+	const handleSourceSelect = (platformKey: PlatformKey | null) => {
+		setSelectedSource((prev) => {
+			const newValue = prev === platformKey ? null : platformKey;
+			if (newValue === null) {
+				localStorage.removeItem(SELECTED_SOURCE_KEY);
+			} else {
+				localStorage.setItem(SELECTED_SOURCE_KEY, newValue);
+			}
+			return newValue;
+		});
 	};
 
-	const handleTargetSelect = (platformKey: PlatformKey) => {
-		setSelectedTarget((prev) => (prev === platformKey ? null : platformKey));
+	const handleTargetSelect = (platformKey: PlatformKey | null) => {
+		setSelectedTarget((prev) => {
+			const newValue = prev === platformKey ? null : platformKey;
+			if (newValue === null) {
+				localStorage.removeItem(SELECTED_TARGET_KEY);
+			} else {
+				localStorage.setItem(SELECTED_TARGET_KEY, newValue);
+			}
+			return newValue;
+		});
 	};
 
 	async function handlePlatformClick(platformKey: PlatformKey, type: "source" | "target") {
@@ -66,7 +129,9 @@ export default function Page() {
 				// Success - needs oauth
 				// TODO: Right now, redirect to oauthUrl. Consider modal/popup
 				if (body.data.oauthUrl) {
-					window.location.href = body.data.oauthUrl;
+					const url = new URL(body.data.oauthUrl, window.location.origin);
+					url.searchParams.set("type", type);
+					window.location.href = url.toString();
 					return;
 				}
 			}
