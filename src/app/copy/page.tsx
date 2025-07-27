@@ -15,7 +15,7 @@ function showError(msg: string, error?: unknown) {
 function LoadingSkeleton() {
 	return (
 		<div className="flex flex-wrap gap-3">
-			{[...Array(6)].map((_, i) => (
+			{[...Array(20)].map((_, i) => (
 				<div key={i} className="h-20 w-32 animate-pulse rounded bg-gray-300 dark:bg-gray-700" />
 			))}
 		</div>
