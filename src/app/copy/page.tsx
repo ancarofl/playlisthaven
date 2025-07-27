@@ -12,6 +12,16 @@ function showError(msg: string, error?: unknown) {
 	alert(msg);
 }
 
+function LoadingSkeleton() {
+	return (
+		<div className="flex flex-wrap gap-3">
+			{[...Array(6)].map((_, i) => (
+				<div key={i} className="h-20 w-32 animate-pulse rounded bg-gray-300 dark:bg-gray-700" />
+			))}
+		</div>
+	);
+}
+
 function Placeholder() {
 	return (
 		<div className="flex h-20 w-32 items-center justify-center rounded border border-dashed border-gray-400 text-gray-500 dark:border-gray-600 dark:text-gray-400">
@@ -23,12 +33,14 @@ function Placeholder() {
 export default function Page() {
 	const [selectedSource, setSelectedSource] = useState<PlatformKey | null>(null);
 	const [selectedTarget, setSelectedTarget] = useState<PlatformKey | null>(null);
+	const [isLoading, setIsLoading] = useState(true);
 
 	const sourcePlatforms = PLATFORMS.filter((p) => p.key !== selectedTarget);
 	const targetPlatforms = PLATFORMS.filter((p) => p.key !== selectedSource);
 
 	// TODO: Temppp
 	useEffect(() => {
+		// On mount, check for query params to set selected source/target from oauth callback
 		const url = new URL(window.location.href);
 		const connectedProvider = url.searchParams.get("connectedProvider");
 		const connectedType = url.searchParams.get("connectedType");
@@ -71,6 +83,7 @@ export default function Page() {
 			setSelectedSource(savedSource);
 			setSelectedTarget(savedTarget);
 		}
+		setIsLoading(false);
 	}, []);
 
 	const handleSourceSelect = (platformKey: PlatformKey | null) => {
@@ -142,6 +155,24 @@ export default function Page() {
 		} catch (err) {
 			showError("Could not connect to server. Please try again.", err);
 		}
+	}
+
+	if (isLoading) {
+		return (
+			<div className="m-auto mt-6 flex flex-col gap-y-12">
+				<h1 className="text-center text-3xl font-semibold">Select source and target platform</h1>
+				<div className="grid grid-cols-1 gap-12 md:grid-cols-2">
+					<div className="flex flex-col items-center gap-6">
+						<h2 className="text-2xl">Source</h2>
+						<LoadingSkeleton />
+					</div>
+					<div className="flex flex-col items-center gap-6">
+						<h2 className="text-2xl">Target</h2>
+						<LoadingSkeleton />
+					</div>
+				</div>
+			</div>
+		);
 	}
 
 	return (
