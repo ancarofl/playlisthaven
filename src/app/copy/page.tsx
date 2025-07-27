@@ -38,7 +38,7 @@ export default function Page() {
 		// TODO: Disable button while this is happening??? What is "this" xD
 
 		try {
-			const res = await fetch(`/api/connections/${platformKey}`);
+			const res = await fetch(`/api/${platformKey}/connection`);
 			const body = await res.json();
 
 			// Error - request not ok aka status not 2xx
@@ -54,6 +54,7 @@ export default function Page() {
 				return;
 			}
 
+			// TODO: Type or something?
 			if (body.data) {
 				// Success - connected - set the selected platform
 				if (body.data.connected) {
@@ -62,9 +63,10 @@ export default function Page() {
 					return;
 				}
 
-				// Success - needs OAuth
-				if (body.data.authUrl) {
-					window.location.href = body.data.authUrl;
+				// Success - needs oauth
+				// TODO: Right now, redirect to oauthUrl. Consider modal/popup
+				if (body.data.oauthUrl) {
+					window.location.href = body.data.oauthUrl;
 					return;
 				}
 			}

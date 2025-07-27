@@ -1,4 +1,4 @@
-import { APIError, InternalServerError } from "@/lib/errors";
+import { APIError, InternalServerError } from "./errors";
 
 export function successResponse<T>(data: T, status = 200) {
 	return Response.json({ success: true, data }, { status });

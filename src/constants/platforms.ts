@@ -26,3 +26,11 @@ export const PLATFORMS: Platform[] = [
 ];
 
 export type PlatformKey = (typeof PLATFORM_KEYS)[number];
+
+// Spotify
+export const SPOTIFY_AUTHORIZE_URL = "https://accounts.spotify.com/authorize";
+export const SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token";
+
+// YouTube
+export const YOUTUBE_AUTHORIZE_URL = "https://accounts.google.com/o/oauth2/v2/auth";
+export const YOUTUBE_TOKEN_URL = "https://oauth2.googleapis.com/token";

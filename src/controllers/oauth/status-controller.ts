@@ -1,14 +1,14 @@
 import { PlatformKey } from "@/constants/platforms";
-import { MissingSessionError } from "@/lib/errors";
+import { MissingSessionError } from "@/helpers/errors";
 import { getConnectionStatus } from "@/services/provider-connection-service";
 
 // RESTful API design dictates to always return a JSON object, not a primitive value. So let's do that
-type ProviderAuthStatus = { connected: boolean };
+type OauthStatus = { connected: boolean };
 
-export async function providerAuthStatusController(
+export async function oauthStatusController(
 	sessionId: string | undefined,
 	provider: PlatformKey,
-): Promise<ProviderAuthStatus> {
+): Promise<OauthStatus> {
 	/* If no guest session found, then either there is a bug/issue OR the user has blocked cookies.
 	So throw custom MissingSessionError and handle it in the FE(for now, assuming the latter is the case). */
 	if (!sessionId) throw new MissingSessionError();

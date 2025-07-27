@@ -4,7 +4,7 @@ import Link from "next/link";
 
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
+import { cn } from "@/helpers/utils";
 
 export default function Page() {
 	return (

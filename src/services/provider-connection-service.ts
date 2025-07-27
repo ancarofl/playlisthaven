@@ -1,6 +1,6 @@
 import { PlatformKey } from "@/constants/platforms";
 import { UserConnection } from "@/generated/prisma";
-import { prisma } from "@/lib/db";
+import { prisma } from "@/helpers/db";
 
 // TODO: Do I want destructured arguments or positional? Destructured is safer but SO MUCH DAMN CODE
 type GetConnectionStatusArgs = {
