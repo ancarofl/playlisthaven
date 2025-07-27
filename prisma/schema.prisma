@@ -1,0 +1,55 @@
+generator client {
+    provider = "prisma-client-js"
+    output   = "../src/generated/prisma"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model GuestSession {
+    id          String           @id @default(cuid())
+    createdAt   DateTime         @default(now()) @map("created_at")
+    expiresAt   DateTime?        @map("expires_at")
+    connections UserConnection[]
+    // TODO: Add updatedAt?
+
+    @@map("guest_session")
+}
+
+model User {
+    id          String           @id @default(cuid())
+    email       String?          @unique
+    password    String?
+    createdAt   DateTime         @default(now()) @map("created_at")
+    connections UserConnection[]
+    // TODO: Add updatedAt?
+
+    @@map("user")
+}
+
+/**
+ * Important: Prisma can't enforce at least one of GuestSession OR User not being null even tho that's the logic.
+ * Enforce via business logic.
+ */
+// TODO: Encrypt tokens
+// TODO: Rename from UserConnection? Is it misleading/does it suggest it's user only?
+model UserConnection {
+    id             String    @id @default(cuid())
+    provider       String // TODO: Use a Prisma enum algined with the PlatformKey TS type
+    accessToken    String    @map("access_token")
+    refreshToken   String    @map("refresh_token")
+    expiresAt      DateTime? @map("expires_at")
+    guestSessionId String?   @map("guest_session_id") // FK to GuestSession
+    userId         String?   @map("user_id") // FK to User
+    // TODO: Add updatedAt?
+
+    // TODO: Careful with that cascade if convering guest to user. Add user to userConnection, guestSession to null, THEN delete guestSession.
+    guestSession GuestSession? @relation(fields: [guestSessionId], references: [id], onDelete: Cascade) // auto delete connections if deleting guest
+    user         User?         @relation(fields: [userId], references: [id], onDelete: Cascade) // auto delete connections if deleting user
+
+    @@unique([guestSessionId, provider]) // ensures combo of guestSessionId+provider is unique in this table
+    @@unique([userId, provider]) // ensures combo of user+provider is unique in this table
+    @@map("user_connection")
+}

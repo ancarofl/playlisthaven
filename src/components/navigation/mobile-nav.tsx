@@ -8,18 +8,11 @@ import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { NAV_LINKS } from "@/constants/navigation";
 
-interface LinkWithIcon {
-	href: string;
-	label: string;
-	Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-}
+import { NavLink } from "./nav-link";
 
-interface MobileNavProps {
-	links: LinkWithIcon[];
-}
-
-export function MobileNav({ links }: MobileNavProps) {
+export function MobileNav() {
 	const [open, setOpen] = useState(false);
 
 	const handleClose = () => setOpen(false);
@@ -46,11 +39,15 @@ export function MobileNav({ links }: MobileNavProps) {
 					</Link>
 
 					<div className="flex flex-col gap-y-4 p-6">
-						{links.map(({ href, label, Icon }) => (
-							<Link key={href} href={href} onClick={handleClose} className="flex items-center text-lg hover:underline">
-								<Icon className="mr-5 size-5" />
-								{label}
-							</Link>
+						{NAV_LINKS.map(({ href, label, icon: Icon }) => (
+							<NavLink
+								key={href}
+								href={href}
+								label={label}
+								icon={Icon}
+								onClick={handleClose}
+								className="flex items-center text-lg"
+							/>
 						))}
 					</div>
 				</SheetContent>
