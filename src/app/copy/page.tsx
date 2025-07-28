@@ -28,13 +28,13 @@ function PageLayout({ children }: { children: React.ReactNode }) {
 }
 
 export default function Page() {
+	const [isLoading, setIsLoading] = useState(true);
 	const [selectedSource, setSelectedSource] = useState<PlatformKey | null>(null);
 	const [selectedTarget, setSelectedTarget] = useState<PlatformKey | null>(null);
-	const [isLoading, setIsLoading] = useState(true);
 
-	const sourcePlatforms = PLATFORMS.filter((p) => p.key !== selectedTarget);
-	const targetPlatforms = PLATFORMS.filter((p) => p.key !== selectedSource);
-
+	// UseMemo to only recreate the array when one of the dependencies changes. TODO: To use or not to use?
+	const sourcePlatforms = useMemo(() => PLATFORMS.filter((p) => p.key !== selectedTarget), [selectedTarget]);
+	const targetPlatforms = useMemo(() => PLATFORMS.filter((p) => p.key !== selectedSource), [selectedSource]);
 	const selectors = useMemo(
 		() => [
 			{ title: "Source", platforms: sourcePlatforms, selected: selectedSource, type: "source" as const },
