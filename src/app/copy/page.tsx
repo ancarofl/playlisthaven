@@ -27,6 +27,7 @@ function PageLayout({ children }: { children: React.ReactNode }) {
 	);
 }
 
+// TODO: Refactor. Extract useEffect into hook. Memoize functions. Who knows what else
 export default function Page() {
 	const [isLoading, setIsLoading] = useState(true);
 	const [selectedSource, setSelectedSource] = useState<PlatformKey | null>(null);
