@@ -12,7 +12,8 @@
 		"format": "npm run prettier && npm run eslint",
 		"prepare": "husky install",
 		"prisma:reset": "npx prisma migrate reset --force",
-		"prisma:nuke": "npx rimraf prisma/migrations && npx prisma migrate reset --force && npx prisma migrate dev --name init"
+		"prisma:nuke": "npx rimraf prisma/migrations && npx prisma migrate reset --force && npx prisma migrate dev --name init",
+		"test": "vitest"
 	},
 	"lint-staged": {
 		"src/**/*.{js,jsx,ts,tsx}": [
@@ -42,6 +43,8 @@
 	"devDependencies": {
 		"@eslint/eslintrc": "^3",
 		"@tailwindcss/postcss": "^4",
+		"@testing-library/jest-dom": "^6.6.4",
+		"@testing-library/react": "^16.3.0",
 		"@types/node": "^24.0.0",
 		"@types/react": "^19",
 		"@types/react-dom": "^19",
@@ -49,6 +52,7 @@
 		"eslint-config-next": "^15.3.5",
 		"eslint-plugin-simple-import-sort": "^12.1.1",
 		"husky": "^9.1.7",
+		"jsdom": "^26.1.0",
 		"lint-staged": "^16.1.2",
 		"prettier": "^3.6.2",
 		"prettier-plugin-tailwindcss": "^0.6.14",
@@ -56,6 +60,7 @@
 		"rimraf": "^6.0.1",
 		"tailwindcss": "^4",
 		"tw-animate-css": "^1.3.5",
-		"typescript": "^5"
+		"typescript": "^5",
+		"vitest": "^3.2.4"
 	}
 }
