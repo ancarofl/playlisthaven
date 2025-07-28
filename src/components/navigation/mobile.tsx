@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { NAV_LINKS } from "@/constants/navigation";
 
-import { NavLink } from "./nav-link";
+import { NavLink } from "./link";
 
 export function MobileNav() {
 	const [open, setOpen] = useState(false);

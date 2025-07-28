@@ -1,32 +1,28 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
-import { MusicPlatformButton } from "@/components/music-platform-button";
+import { LoadingSkeletonPlatformButton } from "@/components/platform/loading-skeleton-button";
+import { PlatformSelector } from "@/components/platform/selector";
 import { SELECTED_SOURCE_KEY, SELECTED_TARGET_KEY } from "@/constants";
 import { PlatformKey, PLATFORMS } from "@/constants/platforms";
 import { clearFromStorage, getFromStorage, saveToStorage } from "@/helpers/local-storage";
+import { showError } from "@/helpers/show-error";
 
-// TODO: Toast not alert
-function showError(msg: string, error?: unknown) {
-	if (error) console.error(msg, error);
-	alert(msg);
-}
-
-function LoadingSkeleton() {
+function LoadingSection({ title }: { title: string }) {
 	return (
-		<div className="flex flex-wrap gap-3">
-			{[...Array(20)].map((_, i) => (
-				<div key={i} className="h-20 w-32 animate-pulse rounded bg-gray-300 dark:bg-gray-700" />
-			))}
+		<div className="flex flex-col items-center gap-6">
+			<h2 className="text-2xl">{title}</h2>
+			<LoadingSkeletonPlatformButton />
 		</div>
 	);
 }
 
-function Placeholder() {
+function PageLayout({ children }: { children: React.ReactNode }) {
 	return (
-		<div className="flex h-20 w-32 items-center justify-center rounded border border-dashed border-gray-400 text-gray-500 dark:border-gray-600 dark:text-gray-400">
-			Placeholder
+		<div className="m-auto mt-6 flex flex-col gap-y-12">
+			<h1 className="text-center text-3xl font-semibold">Select source and target platform</h1>
+			<div className="grid grid-cols-1 gap-12 md:grid-cols-2">{children}</div>
 		</div>
 	);
 }
@@ -38,6 +34,14 @@ export default function Page() {
 
 	const sourcePlatforms = PLATFORMS.filter((p) => p.key !== selectedTarget);
 	const targetPlatforms = PLATFORMS.filter((p) => p.key !== selectedSource);
+
+	const selectors = useMemo(
+		() => [
+			{ title: "Source", platforms: sourcePlatforms, selected: selectedSource, type: "source" as const },
+			{ title: "Target", platforms: targetPlatforms, selected: selectedTarget, type: "target" as const },
+		],
+		[sourcePlatforms, targetPlatforms, selectedSource, selectedTarget],
+	);
 
 	// TODO: Temppp
 	useEffect(() => {
@@ -113,6 +117,7 @@ export default function Page() {
 
 	async function handlePlatformClick(platformKey: PlatformKey, type: "source" | "target") {
 		// TODO: Disable button while this is happening??? What is "this" xD
+		// TODO: Add validation(Zod?)
 
 		try {
 			const res = await fetch(`/api/${platformKey}/connection`);
@@ -160,61 +165,24 @@ export default function Page() {
 
 	if (isLoading) {
 		return (
-			<div className="m-auto mt-6 flex flex-col gap-y-12">
-				<h1 className="text-center text-3xl font-semibold">Select source and target platform</h1>
-				<div className="grid grid-cols-1 gap-12 md:grid-cols-2">
-					<div className="flex flex-col items-center gap-6">
-						<h2 className="text-2xl">Source</h2>
-						<LoadingSkeleton />
-					</div>
-					<div className="flex flex-col items-center gap-6">
-						<h2 className="text-2xl">Target</h2>
-						<LoadingSkeleton />
-					</div>
-				</div>
-			</div>
+			<PageLayout>
+				<LoadingSection title="Source" />
+				<LoadingSection title="Target" />
+			</PageLayout>
 		);
 	}
 
 	return (
-		<div className="m-auto mt-6 flex flex-col gap-y-12">
-			<h1 className="text-center text-3xl font-semibold">Select source and target platform</h1>
-
-			<div className="grid grid-cols-1 gap-12 md:grid-cols-2">
-				<div className="flex flex-col items-center gap-6">
-					<h2 className="text-2xl">Source</h2>
-					<div className="flex flex-wrap justify-center gap-3">
-						{sourcePlatforms.map(({ key }) => (
-							<MusicPlatformButton
-								key={key}
-								platformKey={key}
-								isSelected={selectedSource === key}
-								onClick={() => handlePlatformClick(key, "source")}
-							/>
-						))}
-						{[...Array(18)].map((_, i) => (
-							<Placeholder key={`source-placeholder-${i}`} />
-						))}
-					</div>
-				</div>
-
-				<div className="flex flex-col items-center gap-6">
-					<h2 className="text-2xl">Target</h2>
-					<div className="flex flex-wrap justify-center gap-3">
-						{targetPlatforms.map(({ key }) => (
-							<MusicPlatformButton
-								key={key}
-								platformKey={key}
-								isSelected={selectedTarget === key}
-								onClick={() => handlePlatformClick(key, "target")}
-							/>
-						))}
-						{[...Array(18)].map((_, i) => (
-							<Placeholder key={`target-placeholder-${i}`} />
-						))}
-					</div>
-				</div>
-			</div>
-		</div>
+		<PageLayout>
+			{selectors.map(({ title, platforms, selected, type }) => (
+				<PlatformSelector
+					key={title}
+					title={title}
+					platforms={platforms}
+					selected={selected}
+					onClick={(key) => handlePlatformClick(key, type)}
+				/>
+			))}
+		</PageLayout>
 	);
 }

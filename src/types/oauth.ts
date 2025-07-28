@@ -1,3 +1,15 @@
+// TODO: Validation later
+/* export interface ConnectionData {
+	connected?: boolean;
+	oauthUrl?: string;
+}
+
+export interface ConnectionResponse {
+	data?: ConnectionData;
+	message?: string;
+	error?: string;
+}
+ */
 export interface OauthCallbackParams {
 	code: string;
 	sessionId: string;

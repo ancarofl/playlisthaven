@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { PlatformKey, PLATFORMS } from "@/constants/platforms";
 import { Platform } from "@/types/platforms";
 
-interface MusicPlatformButtonProps {
+interface PlatformButtonProps {
 	platformKey: PlatformKey;
 	onClick?: () => void;
 	isSelected: boolean;
@@ -24,7 +24,7 @@ function getPlatformLogo(platform: Platform, theme: string): string {
 /* TODO: Logos start as light logo till the theme is known - so there will be a flash of different coloured logo(s) IF the user has dark as system setting/has visited before and has selected dark theme. 
 Seems tricky to fix completely, haven't found a solution yet. Might not need to worry about it at all, recheck after colour palette is fully done. 
 Could use a single logo and use CSS but the YT logos are pngs... yeah come back to this later. */
-export function MusicPlatformButton({ platformKey, onClick, isSelected }: MusicPlatformButtonProps) {
+export function PlatformButton({ platformKey, onClick, isSelected }: PlatformButtonProps) {
 	const { resolvedTheme } = useTheme();
 	const [theme, setTheme] = useState("light");
 

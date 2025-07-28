@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 
-import { NavBar } from "@/components/navigation/nav-bar";
+import { MainNav } from "@/components/navigation/main";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
 const geistSans = Geist({
@@ -37,7 +37,7 @@ export default function RootLayout({
 				<ThemeProvider attribute="class" enableSystem defaultTheme="system">
 					<TooltipProvider>
 						<header className="sticky top-0 z-50">
-							<NavBar />
+							<MainNav />
 						</header>
 
 						<main className="p-6">{children}</main>

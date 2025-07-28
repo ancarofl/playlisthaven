@@ -4,11 +4,11 @@ import Link from "next/link";
 
 import { NAV_LINKS } from "@/constants/navigation";
 
-import { ThemeToggle } from "../theme-toggle";
-import { MobileNav } from "./mobile-nav";
-import { NavLink } from "./nav-link";
+import { ThemeToggle } from "../common/theme-toggle";
+import { NavLink } from "./link";
+import { MobileNav } from "./mobile";
 
-export function NavBar() {
+export function MainNav() {
 	return (
 		<nav
 			className="bg-background dark:bg-card grid grid-cols-[auto_1fr] items-center px-6 py-2 shadow-xl md:grid-cols-[1fr_6fr_1fr]"
