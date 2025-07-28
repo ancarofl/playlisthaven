@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { MusicPlatformButton } from "@/components/music-platform-button";
 import { SELECTED_SOURCE_KEY, SELECTED_TARGET_KEY } from "@/constants";
 import { PlatformKey, PLATFORMS } from "@/constants/platforms";
+import { clearFromStorage, getFromStorage, saveToStorage } from "@/helpers/local-storage";
 
 // TODO: Toast not alert
 function showError(msg: string, error?: unknown) {
@@ -56,11 +57,11 @@ export default function Page() {
 
 			// Load opposite from storage
 			const oppositeStorageKey = oppositeType === "source" ? SELECTED_SOURCE_KEY : SELECTED_TARGET_KEY;
-			const oppositeProvider = localStorage.getItem(oppositeStorageKey) as PlatformKey | null;
+			const oppositeProvider = getFromStorage(oppositeStorageKey) as PlatformKey | null;
 
 			// Save connected provider/type to storage
 			const currentStorageKey = connectedType === "source" ? SELECTED_SOURCE_KEY : SELECTED_TARGET_KEY;
-			localStorage.setItem(currentStorageKey, connectedProvider);
+			saveToStorage(currentStorageKey, connectedProvider);
 
 			// Set state for both
 			if (connectedType === "source") {
@@ -77,8 +78,8 @@ export default function Page() {
 			window.history.replaceState({}, "", url.toString());
 		} else {
 			// No URL params, fallback to localStorage normally
-			const savedSource = localStorage.getItem(SELECTED_SOURCE_KEY) as PlatformKey | null;
-			const savedTarget = localStorage.getItem(SELECTED_TARGET_KEY) as PlatformKey | null;
+			const savedSource = getFromStorage(SELECTED_SOURCE_KEY) as PlatformKey | null;
+			const savedTarget = getFromStorage(SELECTED_TARGET_KEY) as PlatformKey | null;
 
 			setSelectedSource(savedSource);
 			setSelectedTarget(savedTarget);
@@ -90,9 +91,9 @@ export default function Page() {
 		setSelectedSource((prev) => {
 			const newValue = prev === platformKey ? null : platformKey;
 			if (newValue === null) {
-				localStorage.removeItem(SELECTED_SOURCE_KEY);
+				clearFromStorage(SELECTED_SOURCE_KEY);
 			} else {
-				localStorage.setItem(SELECTED_SOURCE_KEY, newValue);
+				saveToStorage(SELECTED_SOURCE_KEY, newValue);
 			}
 			return newValue;
 		});
@@ -102,9 +103,9 @@ export default function Page() {
 		setSelectedTarget((prev) => {
 			const newValue = prev === platformKey ? null : platformKey;
 			if (newValue === null) {
-				localStorage.removeItem(SELECTED_TARGET_KEY);
+				clearFromStorage(SELECTED_TARGET_KEY);
 			} else {
-				localStorage.setItem(SELECTED_TARGET_KEY, newValue);
+				saveToStorage(SELECTED_TARGET_KEY, newValue);
 			}
 			return newValue;
 		});
