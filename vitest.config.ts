@@ -13,7 +13,7 @@ export default defineConfig({
 	test: {
 		globals: true,
 		environment: "node",
-		setupFiles: "./tests/helpers/setup-tests.ts",
+		setupFiles: "./tests/helpers/setup.ts",
 		coverage: {
 			provider: "v8", // or "istanbul"
 			reporter: ["text", "html"], // show in terminal and generate HTML report
