@@ -1,8 +1,10 @@
+import { errorToResponse } from "@tests/helpers/error-to-response";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { GET } from "@/app/api/[provider]/connection/route";
 import { PlatformKey } from "@/constants/platforms";
 import { getSessionIdFromCookies } from "@/helpers/cookies";
+import { MissingSessionError, UnsupportedProviderError } from "@/helpers/errors";
 
 // Mock module at the top level. This is hoisted by Vitest
 vi.mock("@/helpers/cookies");
@@ -35,10 +37,7 @@ const testCases: TestCase[] = [
 		description: "an unsupported provider",
 		provider: "unsupporteddproviderhehexd",
 		expectedStatus: 400,
-		expectedBody: {
-			error: "unsupported_provider",
-			message: "Unsupported OAuth provider.",
-		},
+		expectedBody: errorToResponse(new UnsupportedProviderError()),
 		mockSessionId: "mock-session-id",
 		type: "error",
 	},
@@ -46,10 +45,7 @@ const testCases: TestCase[] = [
 		description: "undefined session id",
 		provider: "spotify",
 		expectedStatus: 401,
-		expectedBody: {
-			error: "no_session",
-			message: "Session cookie not found. This feature requires cookies.",
-		},
+		expectedBody: errorToResponse(new MissingSessionError()),
 		mockSessionId: undefined, // cannot use null. small reminder: undefined = not assigned a value, null = explicitly assigned "no value"
 		type: "error",
 	},
@@ -61,9 +57,10 @@ describe("GET /api/[provider]/connection", () => {
 		vi.clearAllMocks();
 	});
 
-	// Replace it.each with forEach for clean titles without quotes
-	testCases.forEach(({ type, expectedStatus, description, provider, expectedBody, mockSessionId }) => {
-		it(`should return ${type} status ${expectedStatus} for ${description}`, async () => {
+	// The main benefit of it versus foreach is that if 1 test fails the rest still run!
+	it.each(testCases)(
+		"should return $type status $expectedStatus for $description",
+		async ({ expectedStatus, provider, expectedBody, mockSessionId }) => {
 			// Arrange
 			vi.mocked(getSessionIdFromCookies).mockResolvedValue(mockSessionId);
 
@@ -77,8 +74,8 @@ describe("GET /api/[provider]/connection", () => {
 			// Assert
 			expect(response.status).toBe(expectedStatus);
 			expect(json).toEqual(expectedBody);
-		});
-	});
+		},
+	);
 
 	// TODO: Add a test for unexpected errors? Maybe better for future safety?
 });

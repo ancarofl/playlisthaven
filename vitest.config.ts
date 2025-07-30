@@ -1,13 +1,18 @@
 import path from "path";
+import tsconfigPaths from "vite-tsconfig-paths";
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
+	plugins: [tsconfigPaths()], // add this plugin
+	resolve: {
+		alias: {
+			"@": path.resolve(__dirname, "src"),
+			"@tests": path.resolve(__dirname, "tests"),
+		},
+	},
 	test: {
 		globals: true,
 		environment: "node",
-		alias: {
-			"@": path.resolve(__dirname, "src"),
-		},
 		setupFiles: "./src/setup-tests.ts",
 		coverage: {
 			provider: "v8", // or "istanbul"
