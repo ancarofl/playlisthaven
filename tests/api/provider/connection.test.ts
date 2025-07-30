@@ -2,12 +2,58 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { GET } from "@/app/api/[provider]/connection/route";
 import { PlatformKey } from "@/constants/platforms";
-import * as cookiesHelper from "@/helpers/cookies";
+import { getSessionIdFromCookies } from "@/helpers/cookies";
 
-// Mock the getSessionIdFromCookies helper
-vi.mock("@/helpers/cookies", () => ({
-	getSessionIdFromCookies: vi.fn(),
-}));
+// Mock module at the top level. This is hoisted by Vitest
+vi.mock("@/helpers/cookies");
+
+type TestCase = {
+	description: string;
+	provider: string;
+	expectedStatus: number;
+	expectedBody: object;
+	mockSessionId: string | undefined;
+	type: string;
+};
+
+const testCases: TestCase[] = [
+	{
+		description: "a supported provider spotify",
+		provider: "spotify",
+		expectedStatus: 200,
+		expectedBody: {
+			success: true,
+			data: {
+				connected: false,
+				oauthUrl: "/api/spotify/oauth/?state=mock-session-id",
+			},
+		},
+		mockSessionId: "mock-session-id", // getSessionIdFromCookies returns undefined when no session (not null)
+		type: "success",
+	},
+	{
+		description: "an unsupported provider",
+		provider: "unsupporteddproviderhehexd",
+		expectedStatus: 400,
+		expectedBody: {
+			error: "unsupported_provider",
+			message: "Unsupported OAuth provider.",
+		},
+		mockSessionId: "mock-session-id",
+		type: "error",
+	},
+	{
+		description: "undefined session id",
+		provider: "spotify",
+		expectedStatus: 401,
+		expectedBody: {
+			error: "no_session",
+			message: "Session cookie not found. This feature requires cookies.",
+		},
+		mockSessionId: undefined, // cannot use null. small reminder: undefined = not assigned a value, null = explicitly assigned "no value"
+		type: "error",
+	},
+];
 
 describe("GET /api/[provider]/connection", () => {
 	beforeEach(() => {
@@ -15,45 +61,24 @@ describe("GET /api/[provider]/connection", () => {
 		vi.clearAllMocks();
 	});
 
-	it("returns a successful response with valid provider spotify", async () => {
-		// Arrange
-		vi.mocked(cookiesHelper.getSessionIdFromCookies).mockResolvedValue("mock-session-id");
+	// Replace it.each with forEach for clean titles without quotes
+	testCases.forEach(({ type, expectedStatus, description, provider, expectedBody, mockSessionId }) => {
+		it(`should return ${type} status ${expectedStatus} for ${description}`, async () => {
+			// Arrange
+			vi.mocked(getSessionIdFromCookies).mockResolvedValue(mockSessionId);
 
-		const dummyRequest = new Request("https://example.com/api/spotify/connection");
-		const dummyParams: { provider: PlatformKey } = { provider: "spotify" };
+			const request = new Request(`https://example.com/api/${provider}/connection`);
+			const params = { provider: provider as PlatformKey };
 
-		// Act
-		const response = await GET(dummyRequest, { params: dummyParams });
+			// Act
+			const response = await GET(request, { params });
+			const json = await response.json();
 
-		// Assert
-		expect(response.status).toBe(200);
-		expect(response).toHaveProperty("json");
-
-		const json = await response.json();
-
-		expect(json).toEqual({
-			success: true,
-			data: {
-				connected: false,
-				oauthUrl: "/api/spotify/oauth/?state=mock-session-id",
-			},
+			// Assert
+			expect(response.status).toBe(expectedStatus);
+			expect(json).toEqual(expectedBody);
 		});
 	});
 
-	it("returns 400 UnsupportedProviderError for unsupported provider", async () => {
-		// Arrange
-		const dummyRequest = new Request("https://example.com/api/invalidprovider/connection");
-		// Bypass TS check since invalid provider is intentional for this test. TODO: Other nicer options...?
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const dummyParams = { provider: "invalidprovider" } as any;
-
-		// Act
-		const response = await GET(dummyRequest, { params: dummyParams });
-		const json = await response.json();
-
-		// Assert. TODO: Helper for error asserts
-		expect(response.status).toBe(400);
-		expect(json).toHaveProperty("error", "unsupported_provider");
-		expect(json).toHaveProperty("message", "Unsupported OAuth provider.");
-	});
+	// TODO: Add a test for unexpected errors? Maybe better for future safety?
 });

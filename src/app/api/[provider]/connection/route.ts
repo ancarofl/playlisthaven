@@ -9,7 +9,7 @@ import { buildOauthUrl } from "@/helpers/oauth/build-url";
 export async function GET(_: Request, { params }: { params: { provider: PlatformKey } }) {
 	try {
 		const { provider } = params;
-		// TODO: Extract intrao helper/validator
+		// TODO: Extract into helper/validator
 		if (!PLATFORMS.some((platform) => platform.key === provider)) {
 			return errorResponse(new UnsupportedProviderError());
 		}
