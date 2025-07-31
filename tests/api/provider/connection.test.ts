@@ -37,6 +37,7 @@ const testCases: TestCase[] = [
 ];
 
 describe("GET /api/[provider]/connection", () => {
+	// TODO: Should I mock getSessionIdFromCookies here and override it in the one test where it has to be different?
 	beforeEach(() => {
 		// Clear mocks before each test to avoid leakage
 		vi.clearAllMocks();
@@ -44,8 +45,6 @@ describe("GET /api/[provider]/connection", () => {
 
 	afterEach(() => {
 		// Restore all spies/mocks to their original implementation after each test
-		/* If I don't do this, the mocked implementation is used in subsequent tests, which I do not want
-		There's an argument to be made for using the mock controller in all the tests but I am not sure about it yet. */
 		vi.restoreAllMocks();
 	});
 
@@ -70,11 +69,6 @@ describe("GET /api/[provider]/connection", () => {
 		expect(json.data.connected).toBe(true);
 		expect(json.data.oauthUrl).toBeUndefined();
 		expect(spy).not.toHaveBeenCalled();
-
-		// Cleanup
-		// Restore original buildOauthUrlModule implementation after test - not needed cuz all are restored in afterEach instead
-		// This wouldn't have been enough on its own, cuz it wouldn't restore oauthController implementation
-		// spy.mockRestore();
 	});
 
 	// TODO: Mock the controller so it's really an isolated unit test?
@@ -131,8 +125,8 @@ describe("GET /api/[provider]/connection", () => {
 		const request = new Request("https://example.com/api/spotify/connection");
 		const params = { provider: "spotify" as PlatformKey };
 
-		// Mock oauthStatusController only in this test
-		const spy = vi.spyOn(oauthController, "oauthStatusController").mockRejectedValue(new Error("Unexpected error."));
+		// Mock oauthStatusController only in this test(cleaned up in the afterEach)
+		vi.spyOn(oauthController, "oauthStatusController").mockRejectedValue(new Error("Unexpected error."));
 
 		// Act
 		const response = await GET(request, { params });
@@ -141,8 +135,5 @@ describe("GET /api/[provider]/connection", () => {
 		// Assert
 		expect(response.status).toBe(500);
 		expect(json).toEqual(errorToResponse(new InternalServerError()));
-
-		// Cleanup
-		// spy.mockRestore(); // restore original implementation after test - not needed cuz done in afterEach
 	});
 });
