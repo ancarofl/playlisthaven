@@ -14,7 +14,8 @@
 		"prisma:reset": "npx prisma migrate reset --force",
 		"prisma:nuke": "npx rimraf prisma/migrations && npx prisma migrate reset --force && npx prisma migrate dev --name init",
 		"test": "vitest",
-		"test:coverage": "vitest run --coverage"
+		"test:coverage": "vitest run --coverage",
+		"test:verbose": "vitest --reporter verbose"
 	},
 	"lint-staged": {
 		"src/**/*.{js,jsx,ts,tsx}": [

@@ -71,7 +71,7 @@ describe("GET /api/[provider]/connection", () => {
 		expect(spy).not.toHaveBeenCalled();
 	});
 
-	// TODO: Mock the controller so it's really an isolated unit test?
+	// TODO: Mock the controller so it's really an isolated unit test? Mock-session-id won't exist in the DB anyway so it's def gonna return connected false but Idk
 	it("should return status 200 with oauthUrl for a supported provider spotify with connected false", async () => {
 		// Arrange
 		vi.mocked(getSessionIdFromCookies).mockResolvedValue("mock-session-id");
