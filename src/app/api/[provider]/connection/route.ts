@@ -1,7 +1,7 @@
-import { PlatformKey } from "@/constants/platforms";
+import { PlatformKey, PLATFORMS } from "@/constants/platforms";
 import { oauthStatusController } from "@/controllers/oauth/status-controller";
 import { getSessionIdFromCookies } from "@/helpers/cookies";
-import { MissingSessionError } from "@/helpers/errors";
+import { MissingSessionError, UnsupportedProviderError } from "@/helpers/errors";
 import { errorResponse, successResponse } from "@/helpers/json-response";
 import { buildOauthUrl } from "@/helpers/oauth/build-url";
 
@@ -9,6 +9,10 @@ import { buildOauthUrl } from "@/helpers/oauth/build-url";
 export async function GET(_: Request, { params }: { params: { provider: PlatformKey } }) {
 	try {
 		const { provider } = params;
+		// TODO: Extract into helper/validator
+		if (!PLATFORMS.some((platform) => platform.key === provider)) {
+			return errorResponse(new UnsupportedProviderError());
+		}
 
 		const sessionId = await getSessionIdFromCookies();
 		if (!sessionId) throw new MissingSessionError();
