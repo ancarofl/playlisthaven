@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { GET } from "@/app/api/[provider]/connection/route";
 import { PlatformKey } from "@/constants/platforms";
-import * as oauthController from "@/controllers/oauth/status-controller";
+import * as oauthStatusControllerModule from "@/controllers/oauth/status-controller";
 import { getSessionIdFromCookies } from "@/helpers/cookies";
 import { InternalServerError, MissingSessionError, UnsupportedProviderError } from "@/helpers/errors";
 import * as buildOauthUrlModule from "@/helpers/oauth/build-url";
@@ -51,7 +51,7 @@ describe("GET /api/[provider]/connection", () => {
 	it("should return status 200 without oauthUrl for a supported provider spotify with connected true", async () => {
 		// Arrange
 		vi.mocked(getSessionIdFromCookies).mockResolvedValue("mock-session-id");
-		vi.spyOn(oauthController, "oauthStatusController").mockResolvedValue({ connected: true });
+		vi.spyOn(oauthStatusControllerModule, "oauthStatusController").mockResolvedValue({ connected: true });
 
 		// Spy on buildOauthUrl to verify it is NOT called
 		const spy = vi.spyOn(buildOauthUrlModule, "buildOauthUrl");
@@ -126,7 +126,7 @@ describe("GET /api/[provider]/connection", () => {
 		const params = { provider: "spotify" as PlatformKey };
 
 		// Mock oauthStatusController only in this test(cleaned up in the afterEach)
-		vi.spyOn(oauthController, "oauthStatusController").mockRejectedValue(new Error("Unexpected error."));
+		vi.spyOn(oauthStatusControllerModule, "oauthStatusController").mockRejectedValue(new Error("Unexpected error."));
 
 		// Act
 		const response = await GET(request, { params });
