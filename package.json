@@ -11,6 +11,7 @@
 		"eslint": "eslint src --fix",
 		"format": "npm run prettier && npm run eslint",
 		"prepare": "husky install",
+		"prisma:migrate": "npx prisma migrate deploy",
 		"prisma:reset": "npx prisma migrate reset --force",
 		"prisma:nuke": "npx rimraf prisma/migrations && npx prisma migrate reset --force && npx prisma migrate dev --name init",
 		"test": "vitest",

@@ -60,7 +60,7 @@ jobs:
       - name: Run migrations to prepare the test DB
         env:
           DATABASE_URL: postgres://testuser:testpass@localhost:5432/testdb
-        run: npm run migrate
+        run: npm run prisma:migrate
 
       - name: Run tests with verbose output
         env:
